@@ -7,7 +7,7 @@ from contextlib import asynccontextmanager
 
 import uvicorn
 from loguru import logger
-from fastapi import FastAPI
+from fastapi import FastAPI, Security
 from fastapi.middleware.cors import CORSMiddleware
 
 from .core.config import settings
@@ -15,6 +15,7 @@ from .services.tts_model import TTSModel
 from .routers.development import router as dev_router
 from .services.tts_service import TTSService
 from .routers.openai_compatible import router as openai_router
+from .core.security import verify_api_key
 
 
 def setup_logger():
@@ -77,6 +78,7 @@ app = FastAPI(
     version=settings.api_version,
     lifespan=lifespan,
     openapi_url="/openapi.json",  # Explicitly enable OpenAPI schema
+    dependencies=[Security(verify_api_key)]  # Add this line to protect all routes
 )
 
 # Add CORS middleware

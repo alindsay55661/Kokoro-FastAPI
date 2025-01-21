@@ -11,6 +11,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+# Create app directory
+WORKDIR /app
+
 # Install PyTorch CPU version and ONNX runtime
 RUN pip3 install --no-cache-dir torch==2.5.1 --extra-index-url https://download.pytorch.org/whl/cpu 
 
@@ -20,6 +23,9 @@ RUN pip3 install --no-cache-dir -r requirements.txt
 
 # Copy application code and model
 COPY . /app/
+
+# Verify model exists (for debugging)
+RUN ls -la /app/Kokoro-82M/kokoro-v0_19.onnx
 
 # Set working directory
 WORKDIR /app
@@ -41,4 +47,4 @@ USER appuser
 ENV PYTHONPATH=/app:/app/Kokoro-82M
 
 # Run FastAPI server with debug logging and reload
-CMD ["uvicorn", "api.src.main:app", "--host", "0.0.0.0", "--port", "8880", "--log-level", "debug"]
+CMD ["uvicorn", "api.src.main:app", "--host", "0.0.0.0", "--port", "8080", "--log-level", "debug"]

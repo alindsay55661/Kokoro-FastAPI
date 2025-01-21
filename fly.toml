@@ -1,0 +1,30 @@
+# fly.toml app configuration file generated for holy-bird-6851 on 2025-01-20T18:37:44-08:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'holy-bird-6851'
+primary_region = 'lax'
+
+[build]
+  dockerfile = 'Dockerfile.cpu'
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+  max_machines_running = 1
+  processes = ['app']
+
+[services.concurrency]
+  type = "connections"
+  hard_limit = 25
+  soft_limit = 20
+
+
+[[vm]]
+  memory = '8gb'
+  cpu_kind = 'performance'
+  cpus = 4

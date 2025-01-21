@@ -35,7 +35,6 @@ ENV/
 *examples/*.acc
 *examples/*.ogg
 
-Kokoro-82M/
 ui/data
 tests/
 *.md

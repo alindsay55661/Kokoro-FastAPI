@@ -22,7 +22,7 @@ services:
         tail -f /dev/null
       "
     healthcheck:
-      test: ["CMD", "test", "-f", ".cloned"]
+      test: ['CMD', 'test', '-f', '.cloned']
       interval: 5s
       timeout: 2s
       retries: 300
@@ -30,7 +30,7 @@ services:
 
   kokoro-tts:
     # image: ghcr.io/remsky/kokoro-fastapi-cpu:v0.0.5post1
-        # Uncomment below (and comment out above) to build from source instead of using the released image
+    # Uncomment below (and comment out above) to build from source instead of using the released image
     build:
       context: .
       dockerfile: Dockerfile.cpu
@@ -38,19 +38,19 @@ services:
       - ./api/src:/app/api/src
       - ./Kokoro-82M:/app/Kokoro-82M
     ports:
-      - "8880:8880"
+      - '8080:8080'
     environment:
       - PYTHONPATH=/app:/app/Kokoro-82M
       # ONNX Optimization Settings for vectorized operations
-      - ONNX_NUM_THREADS=8  # Maximize core usage for vectorized ops
-      - ONNX_INTER_OP_THREADS=4  # Higher inter-op for parallel matrix operations
+      - ONNX_NUM_THREADS=8 # Maximize core usage for vectorized ops
+      - ONNX_INTER_OP_THREADS=4 # Higher inter-op for parallel matrix operations
       - ONNX_EXECUTION_MODE=parallel
       - ONNX_OPTIMIZATION_LEVEL=all
       - ONNX_MEMORY_PATTERN=true
       - ONNX_ARENA_EXTEND_STRATEGY=kNextPowerOfTwo
-      
+
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8880/health"]
+      test: ['CMD', 'curl', '-f', 'http://localhost:8080/health']
       interval: 10s
       timeout: 5s
       retries: 30
@@ -59,21 +59,20 @@ services:
       model-fetcher:
         condition: service_healthy
 
-
   # Gradio UI service [Comment out everything below if you don't need it]
   gradio-ui:
     image: ghcr.io/remsky/kokoro-fastapi-ui:v0.0.5post1
     # Uncomment below (and comment out above) to build from source instead of using the released image
     # build:
-      # context: ./ui
+    # context: ./ui
     ports:
-      - "7860:7860"
+      - '7860:7860'
     volumes:
       - ./ui/data:/app/ui/data
-      - ./ui/app.py:/app/app.py  # Mount app.py for hot reload
+      - ./ui/app.py:/app/app.py # Mount app.py for hot reload
     environment:
-      - GRADIO_WATCH=True  # Enable hot reloading
-      - PYTHONUNBUFFERED=1  # Ensure Python output is not buffered
+      - GRADIO_WATCH=True # Enable hot reloading
+      - PYTHONUNBUFFERED=1 # Ensure Python output is not buffered
     depends_on:
       kokoro-tts:
         condition: service_healthy

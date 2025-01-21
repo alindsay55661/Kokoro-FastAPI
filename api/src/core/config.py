@@ -7,7 +7,7 @@ class Settings(BaseSettings):
     api_description: str = "API for text-to-speech generation using Kokoro"
     api_version: str = "1.0.0"
     host: str = "0.0.0.0"
-    port: int = 8880
+    port: int = 8080
 
     # TTS Settings
     output_dir: str = "output"
@@ -28,6 +28,9 @@ class Settings(BaseSettings):
     onnx_optimization_level: str = "all"  # all, basic, or disabled
     onnx_memory_pattern: bool = True  # Enable memory pattern optimization
     onnx_arena_extend_strategy: str = "kNextPowerOfTwo"  # Memory allocation strategy
+
+    # Security Settings
+    api_secret_key: str = "your-default-secret-key"  # Should be overridden by environment variable
 
     class Config:
         env_file = ".env"
